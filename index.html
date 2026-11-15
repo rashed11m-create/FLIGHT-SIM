@@ -4,79 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#071827">
-<title>FLIGHT SIM | محاكي الطيران</title>
+<title>FLIGHT SIM 2.0</title>
 <style>
-:root{--bg:#071827;--panel:#10283a;--panel2:#163449;--gold:#e8b95c;--text:#f4f7fa;--muted:#9eb2c1;--green:#35c58a;--red:#f06b70}
+:root{--bg:#071827;--panel:#10283a;--panel2:#19384d;--gold:#e8b95c;--text:#f4f7fa;--muted:#9eb2c1;--green:#35c58a;--red:#f06b70}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Tahoma,sans-serif}
-header{padding:22px 18px;background:linear-gradient(120deg,#102d43,#071827);border-bottom:1px solid #244358}
-.brand{font-size:25px;font-weight:900;color:var(--gold);letter-spacing:1px}
-header p{color:var(--muted);margin:7px 0 0;font-size:13px}
-nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#0b2030;position:sticky;top:0;z-index:5}
-nav button{white-space:nowrap;background:var(--panel);border:1px solid #28465a;color:white;padding:11px 15px;border-radius:10px}
+header{padding:22px;background:linear-gradient(120deg,#153c57,#071827);border-bottom:1px solid #29485d}
+.brand{font-size:26px;font-weight:900;color:var(--gold)}
+header p{color:var(--muted);font-size:13px}
+nav{display:flex;gap:7px;overflow-x:auto;padding:12px;background:#0b2030;position:sticky;top:0;z-index:5}
+nav button{white-space:nowrap;background:var(--panel);border:1px solid #29485d;color:white;padding:11px 14px;border-radius:9px}
 nav button.active{background:var(--gold);color:#102030;font-weight:bold}
-main{max-width:1100px;margin:auto;padding:16px}
+main{max-width:1100px;margin:auto;padding:15px}
 .page{display:none}.page.active{display:block}
-h2{font-size:21px;margin:15px 0}
+h2{font-size:21px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid #203e52;border-radius:15px;padding:16px;margin-bottom:12px}
-.stat{font-size:25px;font-weight:bold;color:var(--gold);margin-top:9px}
+.card{background:var(--panel);border:1px solid #25445a;border-radius:14px;padding:15px;margin-bottom:12px}
 .label{font-size:12px;color:var(--muted)}
-.big{font-size:35px}
-button,.btn{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;font-weight:bold;background:var(--gold);color:#142638}
-button.secondary{background:var(--panel2);color:white;border:1px solid #34546a}
-button.danger{background:#762f39;color:white}
-button:disabled{opacity:.4;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.stat{font-size:24px;color:var(--gold);font-weight:bold;margin-top:8px}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;font-weight:bold;background:var(--gold);color:#142638}
+.secondary{background:var(--panel2);color:white;border:1px solid #34546a}
+.danger{background:#762f39;color:white}
 input,select{width:100%;padding:12px;border-radius:9px;background:#081d2c;border:1px solid #34546a;color:white;margin:7px 0 14px}
 label{font-size:13px;color:var(--muted)}
-.aircraft{font-size:35px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .badge{display:inline-block;background:#1b493e;color:#74e0b5;padding:5px 9px;border-radius:20px;font-size:11px}
+.aircraft{font-size:35px}
+.notice{background:#183a48;border:1px solid #2c6070;padding:12px;border-radius:10px;color:#c5e8f0;font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{text-align:right;padding:11px 7px;border-bottom:1px solid #294457}
+td,th{text-align:right;padding:10px 6px;border-bottom:1px solid #294457}
 th{color:var(--gold)}
 .empty{color:var(--muted);padding:20px;text-align:center}
-.notice{background:#183a48;border:1px solid #2c6070;padding:12px;border-radius:10px;color:#c5e8f0;font-size:13px}
+.map{background:radial-gradient(ellipse at center,#16435b,#081b2b);height:220px;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:#b8d7e5}
 footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
-
 <header>
- <div class="brand">✈ FLIGHT SIM</div>
+ <div class="brand">✈ FLIGHT SIM 2.0</div>
  <p>محاكي إدارة شركات الطيران | UAE EDITION 🇦🇪</p>
 </header>
-
 <nav>
  <button class="active" onclick="show('home',this)">الرئيسية</button>
  <button onclick="show('fleet',this)">الأسطول</button>
- <button onclick="show('market',this)">شراء طائرات</button>
+ <button onclick="show('market',this)">سوق الطائرات</button>
  <button onclick="show('flights',this)">الرحلات</button>
+ <button onclick="show('crew',this)">الطاقم</button>
  <button onclick="show('airports',this)">المطارات</button>
  <button onclick="show('finance',this)">المالية</button>
 </nav>
-
 <main>
 
 <section id="home" class="page active">
- <h2>لوحة القيادة</h2>
+ <h2>مركز قيادة الشركة</h2>
  <div class="grid">
   <div class="card"><div class="label">رصيد الشركة</div><div class="stat" id="money">0</div><small>AED</small></div>
   <div class="card"><div class="label">الطائرات</div><div class="stat" id="planeCount">0</div></div>
-  <div class="card"><div class="label">الرحلات المكتملة</div><div class="stat" id="flightCount">0</div></div>
+  <div class="card"><div class="label">الرحلات</div><div class="stat" id="flightCount">0</div></div>
   <div class="card"><div class="label">إجمالي الركاب</div><div class="stat" id="passengerCount">0</div></div>
+  <div class="card"><div class="label">عدد أفراد الطاقم</div><div class="stat" id="crewCount">0</div></div>
+  <div class="card"><div class="label">إجمالي الأرباح</div><div class="stat" id="profit">0</div></div>
  </div>
  <div class="card">
   <h2>مرحباً بك في شركتك الجوية</h2>
-  <p>ابدأ بشراء طائراتك، ثم أنشئ رحلات بين المطارات وحقق الأرباح.</p>
-  <div class="notice">رصيد البداية: 50,000,000 درهم إماراتي. هذه محاكاة تعليمية وليست بيانات تشغيل طيران حقيقية.</div>
+  <p>أدر أسطولك، وظّف الطاقم، وشغّل الرحلات حول العالم.</p>
+  <div class="notice">رصيد البداية 100,000,000 درهم. جميع العمليات والأسعار في هذه النسخة افتراضية لأغراض المحاكاة.</div>
   <div class="actions">
    <button onclick="showById('market')">شراء طائرة</button>
    <button class="secondary" onclick="showById('flights')">إنشاء رحلة</button>
   </div>
  </div>
+ <div class="map">🌍<br>خريطة شبكة الرحلات<br><small>اختر المطارات لإنشاء مساراتك الجوية</small></div>
  <h2>آخر الرحلات</h2>
- <div class="card" id="recentFlights"></div>
+ <div class="card" id="recent"></div>
 </section>
 
 <section id="fleet" class="page">
@@ -86,98 +86,94 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
 
 <section id="market" class="page">
  <h2>سوق الطائرات</h2>
- <p class="label">اختر طائرة لتوسيع أسطولك.</p>
  <div id="marketList"></div>
 </section>
 
 <section id="flights" class="page">
  <h2>إنشاء رحلة جديدة</h2>
  <div class="card">
-  <label>اختر الطائرة</label>
-  <select id="flightPlane"></select>
-  <label>مطار المغادرة</label>
-  <select id="origin"></select>
-  <label>مطار الوصول</label>
-  <select id="destination"></select>
-  <label>عدد الركاب</label>
-  <input id="passengers" type="number" min="1" value="100">
-  <label>كمية الشحن بالكيلوغرام</label>
-  <input id="cargo" type="number" min="0" value="500">
-  <button onclick="createFlight()">إنشاء وتشغيل الرحلة</button>
+  <label>الطائرة</label><select id="flightPlane"></select>
+  <label>مطار المغادرة</label><select id="origin"></select>
+  <label>مطار الوصول</label><select id="destination"></select>
+  <label>عدد الركاب</label><input id="passengers" type="number" min="1" value="100">
+  <label>سعر التذكرة للفرد (درهم)</label><input id="ticketPrice" type="number" min="1" value="650">
+  <label>درجة السفر</label>
+  <select id="classType"><option value="1">اقتصادية</option><option value="1.8">رجال الأعمال</option><option value="2.8">الأولى</option></select>
+  <label>الشحن بالكيلوغرام</label><input id="cargo" type="number" min="0" value="500">
+  <button onclick="createFlight()">تشغيل الرحلة</button>
  </div>
- <h2>سجل الرحلات</h2>
+ <h2>جدول الرحلات</h2>
  <div class="card" id="flightHistory"></div>
 </section>
 
+<section id="crew" class="page">
+ <h2>إدارة الطاقم</h2>
+ <div class="grid">
+  <div class="card"><div class="label">الطيارون</div><div class="stat" id="pilots">0</div></div>
+  <div class="card"><div class="label">المضيفون</div><div class="stat" id="cabinCrew">0</div></div>
+ </div>
+ <div class="card">
+  <h3>توظيف موظف جديد</h3>
+  <label>الوظيفة</label>
+  <select id="job"><option value="pilot">طيار</option><option value="cabin">مضيف طيران</option></select>
+  <button onclick="hire()">توظيف — 25,000 AED</button>
+ </div>
+ <div id="crewList"></div>
+</section>
+
 <section id="airports" class="page">
- <h2>المطارات المتاحة</h2>
+ <h2>المطارات الدولية</h2>
  <div id="airportList"></div>
 </section>
 
 <section id="finance" class="page">
  <h2>الإدارة المالية</h2>
  <div class="grid">
-  <div class="card"><div class="label">الرصيد الحالي</div><div class="stat" id="financeMoney">0</div></div>
-  <div class="card"><div class="label">إجمالي الإيرادات</div><div class="stat" id="income">0</div></div>
-  <div class="card"><div class="label">إجمالي المصروفات</div><div class="stat" id="expenses">0</div></div>
-  <div class="card"><div class="label">صافي الربح</div><div class="stat" id="profit">0</div></div>
+  <div class="card"><div class="label">الرصيد</div><div class="stat" id="fMoney">0</div></div>
+  <div class="card"><div class="label">الإيرادات</div><div class="stat" id="income">0</div></div>
+  <div class="card"><div class="label">المصروفات</div><div class="stat" id="expenses">0</div></div>
+  <div class="card"><div class="label">صافي الربح</div><div class="stat" id="net">0</div></div>
  </div>
- <div class="card">
-  <h3>سجل العمليات المالية</h3>
-  <div id="transactions"></div>
- </div>
- <div class="actions">
-  <button class="danger" onclick="resetGame()">إعادة بدء اللعبة</button>
- </div>
+ <div class="card"><h3>سجل العمليات</h3><div id="transactions"></div></div>
+ <button class="danger" onclick="resetGame()">إعادة بدء اللعبة</button>
 </section>
 
 </main>
-<footer>FLIGHT SIM 🇦🇪 — إصدار تجريبي 1.0</footer>
+<footer>FLIGHT SIM 2.0 🇦🇪 | نسخة تجريبية</footer>
 
 <script>
 const planes=[
- {id:1,name:"Airbus A380",price:45000000,capacity:500,range:15000,cost:18000,cargo:80000},
- {id:2,name:"Boeing 777-300ER",price:32000000,capacity:350,range:13600,cost:14000,cargo:65000},
- {id:3,name:"Airbus A350-900",price:35000000,capacity:300,range:15000,cost:12500,cargo:60000},
- {id:4,name:"Boeing 787-9",price:28000000,capacity:290,range:14100,cost:11000,cargo:55000},
- {id:5,name:"Airbus A320neo",price:12000000,capacity:180,range:6500,cost:6000,cargo:20000},
- {id:6,name:"Boeing 737 MAX 8",price:11500000,capacity:178,range:6500,cost:5800,cargo:18000}
+{id:1,name:"Airbus A380",price:45000000,capacity:500,range:15000,fuel:12000,cargo:80000},
+{id:2,name:"Boeing 777-300ER",price:32000000,capacity:350,range:13600,fuel:9500,cargo:65000},
+{id:3,name:"Airbus A350-900",price:35000000,capacity:300,range:15000,fuel:8500,cargo:60000},
+{id:4,name:"Boeing 787-9",price:28000000,capacity:290,range:14100,fuel:7500,cargo:55000},
+{id:5,name:"Airbus A320neo",price:12000000,capacity:180,range:6500,fuel:4000,cargo:20000},
+{id:6,name:"Boeing 737 MAX 8",price:11500000,capacity:178,range:6500,fuel:3800,cargo:18000}
 ];
 const airports=[
- {code:"DXB",name:"دبي الدولي",country:"الإمارات"},
- {code:"AUH",name:"أبوظبي الدولي",country:"الإمارات"},
- {code:"SHJ",name:"الشارقة الدولي",country:"الإمارات"},
- {code:"MCT",name:"مسقط الدولي",country:"عُمان"},
- {code:"DOH",name:"حمد الدولي",country:"قطر"},
- {code:"RUH",name:"الملك خالد الدولي",country:"السعودية"},
- {code:"JED",name:"الملك عبدالعزيز الدولي",country:"السعودية"},
- {code:"CAI",name:"القاهرة الدولي",country:"مصر"},
- {code:"IST",name:"إسطنبول",country:"تركيا"},
- {code:"LHR",name:"لندن هيثرو",country:"بريطانيا"},
- {code:"MUC",name:"ميونخ",country:"ألمانيا"},
- {code:"CDG",name:"باريس شارل ديغول",country:"فرنسا"},
- {code:"JFK",name:"نيويورك جون كينيدي",country:"أمريكا"},
- {code:"KUL",name:"كوالالمبور",country:"ماليزيا"}
+{code:"DXB",name:"دبي الدولي",country:"الإمارات"},
+{code:"AUH",name:"أبوظبي الدولي",country:"الإمارات"},
+{code:"SHJ",name:"الشارقة الدولي",country:"الإمارات"},
+{code:"MCT",name:"مسقط الدولي",country:"عُمان"},
+{code:"DOH",name:"حمد الدولي",country:"قطر"},
+{code:"RUH",name:"الملك خالد الدولي",country:"السعودية"},
+{code:"JED",name:"الملك عبدالعزيز الدولي",country:"السعودية"},
+{code:"CAI",name:"القاهرة الدولي",country:"مصر"},
+{code:"IST",name:"إسطنبول",country:"تركيا"},
+{code:"LHR",name:"لندن هيثرو",country:"بريطانيا"},
+{code:"MUC",name:"ميونخ",country:"ألمانيا"},
+{code:"CDG",name:"باريس شارل ديغول",country:"فرنسا"},
+{code:"JFK",name:"نيويورك جون كينيدي",country:"أمريكا"},
+{code:"KUL",name:"كوالالمبور",country:"ماليزيا"},
+{code:"SIN",name:"سنغافورة شانغي",country:"سنغافورة"},
+{code:"HND",name:"طوكيو هانيدا",country:"اليابان"}
 ];
-
-const initial={
- money:50000000,
- fleet:[],
- flights:[],
- income:0,
- expenses:0,
- transactions:[]
-};
+const initial={money:100000000,fleet:[],flights:[],crew:[],income:0,expenses:0,transactions:[]};
 let game;
-try{
- game=JSON.parse(localStorage.getItem("flightsim_save"))||structuredClone(initial);
-}catch(e){game=structuredClone(initial)}
-
-function save(){
- localStorage.setItem("flightsim_save",JSON.stringify(game));
- render();
-}
+try{game=JSON.parse(localStorage.getItem("flightsim2"))||structuredClone(initial)}catch(e){game=structuredClone(initial)}
 function fmt(n){return Math.round(n).toLocaleString("en-US")}
+function save(){localStorage.setItem("flightsim2",JSON.stringify(game));render()}
+function log(type,amount,desc){game.transactions.unshift({type,amount,desc,date:new Date().toLocaleString("ar-AE")})}
 function show(id,btn){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(id).classList.add("active");
@@ -187,22 +183,15 @@ function show(id,btn){
 }
 function showById(id){
  const buttons=[...document.querySelectorAll("nav button")];
- const index=["home","fleet","market","flights","airports","finance"].indexOf(id);
- show(id,buttons[index]);
-}
-function log(type,amount,description){
- game.transactions.unshift({type,amount,description,date:new Date().toLocaleString("ar-AE")});
+ const ids=["home","fleet","market","flights","crew","airports","finance"];
+ show(id,buttons[ids.indexOf(id)]);
 }
 function buyPlane(id){
  const p=planes.find(x=>x.id===id);
- if(game.money<p.price){alert("رصيدك غير كافٍ لشراء هذه الطائرة.");return}
- game.money-=p.price;
- game.expenses+=p.price;
- const plane={...p,uid:Date.now()+Math.random(),status:"جاهزة"};
- game.fleet.push(plane);
- log("مصروف",p.price,"شراء "+p.name);
- save();
- alert("تم شراء الطائرة بنجاح!");
+ if(game.money<p.price)return alert("الرصيد غير كافٍ.");
+ game.money-=p.price;game.expenses+=p.price;
+ game.fleet.push({...p,uid:Date.now()+Math.random(),fuelLevel:100,health:100});
+ log("مصروف",p.price,"شراء "+p.name);save();alert("تم شراء الطائرة!");
 }
 function createFlight(){
  const uid=Number(document.getElementById("flightPlane").value);
@@ -210,92 +199,94 @@ function createFlight(){
  const origin=document.getElementById("origin").value;
  const destination=document.getElementById("destination").value;
  const passengers=Number(document.getElementById("passengers").value);
+ const ticket=Number(document.getElementById("ticketPrice").value);
+ const classFactor=Number(document.getElementById("classType").value);
  const cargo=Number(document.getElementById("cargo").value);
- if(!plane){alert("اشترِ طائرة أولاً.");return}
- if(origin===destination){alert("اختر مطارين مختلفين.");return}
- if(passengers<1||passengers>plane.capacity){alert("عدد الركاب غير مناسب لسعة الطائرة.");return}
- if(cargo<0||cargo>plane.cargo){alert("كمية الشحن تتجاوز سعة الطائرة.");return}
- const cost=plane.cost;
- if(game.money<cost){alert("لا يوجد رصيد كافٍ لتشغيل الرحلة.");return}
- const passengerRevenue=passengers*650;
- const cargoRevenue=cargo*2;
- const revenue=passengerRevenue+cargoRevenue;
- const profit=revenue-cost;
- game.money+=profit;
- game.income+=revenue;
- game.expenses+=cost;
- plane.status="جاهزة";
- const flight={
-  id:game.flights.length+1,
-  plane:plane.name,
-  origin,destination,passengers,cargo,
-  revenue,cost,profit,
-  date:new Date().toLocaleString("ar-AE")
- };
+ if(!plane)return alert("اشترِ طائرة أولاً.");
+ if(origin===destination)return alert("اختر مطارين مختلفين.");
+ if(passengers<1||passengers>plane.capacity)return alert("عدد الركاب يتجاوز سعة الطائرة.");
+ if(ticket<1||cargo<0||cargo>plane.cargo)return alert("راجع سعر التذكرة أو كمية الشحن.");
+ if(plane.health<20)return alert("الطائرة تحتاج صيانة قبل الرحلة.");
+ if(plane.fuelLevel<30)return alert("الوقود غير كافٍ. أعد التزود بالوقود.");
+ if(!game.crew.some(c=>c.job==="pilot"))return alert("تحتاج إلى توظيف طيار واحد على الأقل.");
+ if(!game.crew.some(c=>c.job==="cabin"))return alert("تحتاج إلى توظيف مضيف طيران واحد على الأقل.");
+ const fuelCost=plane.fuel*3;
+ const operationCost=plane.fuel*1.4;
+ const revenue=passengers*ticket*classFactor+cargo*2;
+ const totalCost=fuelCost+operationCost;
+ const profit=revenue-totalCost;
+ if(game.money<totalCost)return alert("الرصيد لا يكفي لتشغيل الرحلة.");
+ game.money+=profit;game.income+=revenue;game.expenses+=totalCost;
+ plane.fuelLevel=Math.max(0,plane.fuelLevel-30);
+ plane.health=Math.max(0,plane.health-8);
+ const flight={id:game.flights.length+1,plane:plane.name,origin,destination,passengers,cargo,revenue,cost:totalCost,profit,date:new Date().toLocaleString("ar-AE")};
  game.flights.unshift(flight);
- log("إيراد",revenue,"إيرادات الرحلة "+origin+" - "+destination);
- log("مصروف",cost,"تكلفة تشغيل الرحلة");
+ log("إيراد",revenue,"إيرادات رحلة "+origin+" - "+destination);
+ log("مصروف",totalCost,"وقود وتشغيل الرحلة");
  save();
- alert("اكتملت الرحلة في المحاكاة!\nالإيرادات: "+fmt(revenue)+" AED\nالتكلفة: "+fmt(cost)+" AED\nالربح: "+fmt(profit)+" AED");
+ alert("اكتملت الرحلة في المحاكاة!\nالإيرادات: "+fmt(revenue)+" AED\nالمصروفات: "+fmt(totalCost)+" AED\nالربح: "+fmt(profit)+" AED");
+}
+function hire(){
+ const job=document.getElementById("job").value;
+ const cost=25000;
+ if(game.money<cost)return alert("الرصيد غير كافٍ.");
+ game.money-=cost;game.expenses+=cost;
+ game.crew.push({id:Date.now(),job,name:(job==="pilot"?"طيار ":"مضيف ")+(game.crew.length+1)});
+ log("مصروف",cost,"توظيف موظف جديد");save();alert("تم توظيف الموظف!");
+}
+function refuel(uid){
+ const p=game.fleet.find(x=>x.uid===uid);
+ if(game.money<50000)return alert("الرصيد غير كافٍ.");
+ game.money-=50000;game.expenses+=50000;p.fuelLevel=100;
+ log("مصروف",50000,"تعبئة وقود "+p.name);save();
+}
+function repair(uid){
+ const p=game.fleet.find(x=>x.uid===uid);
+ if(game.money<100000)return alert("الرصيد غير كافٍ.");
+ game.money-=100000;game.expenses+=100000;p.health=100;
+ log("مصروف",100000,"صيانة "+p.name);save();
 }
 function resetGame(){
- if(!confirm("هل أنت متأكد؟ سيتم حذف كل تقدمك."))return;
- game=structuredClone(initial);
- save();
+ if(!confirm("هل أنت متأكد من حذف كل تقدمك؟"))return;
+ game=structuredClone(initial);save();
 }
 function render(){
+ const passengers=game.flights.reduce((a,f)=>a+f.passengers,0);
+ const net=game.income-game.expenses;
  document.getElementById("money").textContent=fmt(game.money);
  document.getElementById("planeCount").textContent=game.fleet.length;
  document.getElementById("flightCount").textContent=game.flights.length;
- document.getElementById("passengerCount").textContent=fmt(game.flights.reduce((a,f)=>a+f.passengers,0));
- document.getElementById("financeMoney").textContent=fmt(game.money);
+ document.getElementById("passengerCount").textContent=fmt(passengers);
+ document.getElementById("crewCount").textContent=game.crew.length;
+ document.getElementById("profit").textContent=fmt(net);
+ document.getElementById("fMoney").textContent=fmt(game.money);
  document.getElementById("income").textContent=fmt(game.income);
  document.getElementById("expenses").textContent=fmt(game.expenses);
- document.getElementById("profit").textContent=fmt(game.income-game.expenses);
-
+ document.getElementById("net").textContent=fmt(net);
  document.getElementById("marketList").innerHTML=planes.map(p=>`
- <div class="card">
-  <div class="aircraft">✈️</div>
-  <h3>${p.name}</h3>
-  <p class="label">السعة: ${p.capacity} راكب</p>
-  <p class="label">المدى: ${fmt(p.range)} كم</p>
-  <p class="label">سعة الشحن: ${fmt(p.cargo)} كجم</p>
-  <div class="stat">${fmt(p.price)} AED</div>
-  <button onclick="buyPlane(${p.id})">شراء الطائرة</button>
- </div>`).join("");
-
+ <div class="card"><div class="aircraft">✈️</div><h3>${p.name}</h3>
+ <p class="label">السعة ${p.capacity} راكب | المدى ${fmt(p.range)} كم</p>
+ <p class="label">الشحن ${fmt(p.cargo)} كجم</p>
+ <div class="stat">${fmt(p.price)} AED</div>
+ <button onclick="buyPlane(${p.id})">شراء الطائرة</button></div>`).join("");
  document.getElementById("fleetList").innerHTML=game.fleet.length?game.fleet.map((p,i)=>`
- <div class="card">
-  <div class="aircraft">✈️</div>
-  <h3>${p.name}</h3>
-  <span class="badge">${p.status}</span>
-  <p class="label">السعة: ${p.capacity} راكب</p>
-  <p class="label">المدى: ${fmt(p.range)} كم</p>
-  <p class="label">رقم الطائرة: FS-${String(i+1).padStart(3,"0")}</p>
- </div>`).join(""):'<div class="empty">ما عندك طائرات حالياً. توجه إلى سوق الطائرات.</div>';
-
- const options=airports.map(a=>`<option value="${a.code}">${a.code} — ${a.name}</option>`).join("");
- document.getElementById("origin").innerHTML=options;
- document.getElementById("destination").innerHTML=options;
+ <div class="card"><div class="aircraft">✈️</div><h3>${p.name}</h3>
+ <span class="badge">FS-${String(i+1).padStart(3,"0")}</span>
+ <p>الوقود: ${p.fuelLevel}%</p><p>حالة الطائرة: ${p.health}%</p>
+ <div class="actions"><button onclick="refuel(${p.uid})">تعبئة وقود — 50,000</button>
+ <button class="secondary" onclick="repair(${p.uid})">صيانة — 100,000</button></div></div>`).join(""):'<div class="empty">لا توجد طائرات. اشترِ أول طائرة من السوق.</div>';
+ const opts=airports.map(a=>`<option value="${a.code}">${a.code} — ${a.name}</option>`).join("");
+ document.getElementById("origin").innerHTML=opts;
+ document.getElementById("destination").innerHTML=opts;
  document.getElementById("flightPlane").innerHTML=game.fleet.map(p=>`<option value="${p.uid}">${p.name}</option>`).join("")||'<option value="">لا توجد طائرات</option>';
-
- document.getElementById("airportList").innerHTML=airports.map(a=>`
- <div class="card"><b>${a.code}</b> — ${a.name}<p class="label">${a.country}</p></div>`).join("");
-
- const history=game.flights.length?game.flights.map(f=>`
- <div class="card">
- <b>${f.origin} → ${f.destination}</b>
- <p class="label">${f.plane} | ${f.date}</p>
- <p>الركاب: ${f.passengers} | الشحن: ${fmt(f.cargo)} كجم</p>
- <span class="badge">الربح: ${fmt(f.profit)} AED</span>
- </div>`).join(""):'<div class="empty">لا توجد رحلات حتى الآن.</div>';
+ document.getElementById("airportList").innerHTML=airports.map(a=>`<div class="card"><b>${a.code}</b> — ${a.name}<p class="label">${a.country}</p></div>`).join("");
+ document.getElementById("pilots").textContent=game.crew.filter(c=>c.job==="pilot").length;
+ document.getElementById("cabinCrew").textContent=game.crew.filter(c=>c.job==="cabin").length;
+ document.getElementById("crewList").innerHTML=game.crew.map(c=>`<div class="card">👤 ${c.name} — ${c.job==="pilot"?"طيار":"مضيف طيران"}</div>`).join("")||'<div class="empty">لم توظف أي موظف بعد.</div>';
+ const history=game.flights.map(f=>`<div class="card"><b>${f.origin} → ${f.destination}</b><p class="label">${f.plane} | ${f.date}</p><p>الركاب: ${f.passengers} | الشحن: ${fmt(f.cargo)} كجم</p><span class="badge">الربح: ${fmt(f.profit)} AED</span></div>`).join("")||'<div class="empty">لا توجد رحلات.</div>';
  document.getElementById("flightHistory").innerHTML=history;
- document.getElementById("recentFlights").innerHTML=game.flights.slice(0,3).map(f=>`
- <p><b>${f.origin} → ${f.destination}</b> — ${fmt(f.profit)} AED</p>`).join("")||'<div class="empty">ابدأ أول رحلة لشركتك!</div>';
-
- document.getElementById("transactions").innerHTML=game.transactions.slice(0,30).map(t=>`
- <p>${t.type==="إيراد"?"🟢":"🔴"} ${t.description}<br>
- <small class="label">${t.date} — ${fmt(t.amount)} AED</small></p>`).join("")||'<div class="empty">لا توجد عمليات مالية.</div>';
+ document.getElementById("recent").innerHTML=game.flights.slice(0,3).map(f=>`<p><b>${f.origin} → ${f.destination}</b> — ${fmt(f.profit)} AED</p>`).join("")||'<div class="empty">لم تبدأ أي رحلة بعد.</div>';
+ document.getElementById("transactions").innerHTML=game.transactions.slice(0,40).map(t=>`<p>${t.type==="إيراد"?"🟢":"🔴"} ${t.desc}<br><small class="label">${t.date} — ${fmt(t.amount)} AED</small></p>`).join("")||'<div class="empty">لا توجد عمليات مالية.</div>';
 }
 render();
 </script>
