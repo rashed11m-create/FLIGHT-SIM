@@ -3,16 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FLIGHT SIM 3.0</title>
+<title>FLIGHT SIM 3.1</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <style>
-:root{--bg:#07110f;--panel:#101e19;--panel2:#172820;--gold:#d8b45b;--green:#35c78a;--red:#ff6464;--text:#f4f5ed;--muted:#9aaca2}
+:root{--bg:#07110f;--panel:#101e19;--gold:#d8b45b;--green:#35c78a;--muted:#9aaca2}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+body{margin:0;background:var(--bg);color:#f4f5ed;font-family:Arial,sans-serif}
 header{padding:20px;background:linear-gradient(120deg,#102c20,#07110f);border-bottom:1px solid #30483a}
 header h1{margin:0;color:var(--gold);font-size:25px}
-header p{color:var(--muted);margin:8px 0 0}
-nav{display:flex;gap:8px;overflow:auto;padding:12px;background:#0b1712;position:sticky;top:0;z-index:5}
-nav button{white-space:nowrap;background:var(--panel2);color:white;border:1px solid #31483b;padding:11px 15px;border-radius:9px}
+header p{color:var(--muted)}
+nav{display:flex;gap:8px;overflow:auto;padding:12px;background:#0b1712;position:sticky;top:0;z-index:10}
+nav button{white-space:nowrap;background:#172820;color:white;border:1px solid #31483b;padding:11px 15px;border-radius:9px}
 nav button.active{background:var(--gold);color:#101810}
 main{padding:15px;max-width:1200px;margin:auto}
 .page{display:none}.page.active{display:block}
@@ -21,8 +25,7 @@ main{padding:15px;max-width:1200px;margin:auto}
 .card h3{margin:0 0 12px;color:var(--gold)}
 .big{font-size:24px;font-weight:bold;margin:8px 0}
 small,.muted{color:var(--muted)}
-button,.btn{cursor:pointer;border:0;border-radius:8px;padding:11px 14px;background:var(--gold);color:#151810;font-weight:bold}
-button:disabled{opacity:.4;cursor:not-allowed}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 14px;background:var(--gold);color:#151810;font-weight:bold}
 .secondary{background:#263b30;color:white}
 .danger{background:#8e3333;color:white}
 input,select{width:100%;padding:12px;margin:7px 0 13px;background:#07130e;color:white;border:1px solid #385242;border-radius:8px}
@@ -32,25 +35,26 @@ td,th{padding:11px 7px;text-align:right;border-bottom:1px solid #293d32}
 th{color:var(--gold)}
 .tablewrap{overflow-x:auto}
 .badge{padding:5px 8px;border-radius:6px;background:#254332;color:#7ee0ad;font-size:12px}
-.badge.red{background:#512727;color:#ff9999}
 .progress{height:8px;background:#263a30;border-radius:10px;overflow:hidden;margin:8px 0}
 .progress span{display:block;height:100%;background:var(--green)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions button{flex:1}
 .airport{display:inline-block;padding:8px;margin:4px;background:#1a3024;border-radius:8px;color:var(--gold)}
+#worldMap{height:540px;width:100%;border-radius:12px;z-index:1}
 footer{text-align:center;color:var(--muted);padding:25px}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#d8b45b;color:#101810;padding:12px 18px;border-radius:10px;display:none;z-index:20}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gold);color:#101810;padding:12px 18px;border-radius:10px;display:none;z-index:1000}
 </style>
 </head>
-<body>
 
+<body>
 <header>
-<h1>✈️ FLIGHT SIM 3.0</h1>
+<h1>✈️ FLIGHT SIM 3.1</h1>
 <p>Airline Management Simulator | Global Aviation</p>
 </header>
 
 <nav id="nav">
 <button class="active" data-page="home">الرئيسية</button>
+<button data-page="map">🌍 الخريطة</button>
 <button data-page="fleet">الأسطول</button>
 <button data-page="market">سوق الطائرات</button>
 <button data-page="routes">الرحلات</button>
@@ -65,34 +69,49 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <section id="home" class="page active">
 <h2>لوحة تحكم الشركة</h2>
 <div class="grid">
-<div class="card"><small>رصيد الشركة</small><div class="big" id="cash">AED 0</div></div>
-<div class="card"><small>عدد الطائرات</small><div class="big" id="planesCount">0</div></div>
-<div class="card"><small>إجمالي الرحلات</small><div class="big" id="flightsCount">0</div></div>
-<div class="card"><small>الموظفون</small><div class="big" id="staffCount">0</div></div>
-<div class="card"><small>سمعة الشركة</small><div class="big" id="reputation">50%</div></div>
-<div class="card"><small>مستوى الشركة</small><div class="big" id="level">1</div></div>
+<div class="card"><small>رصيد الشركة</small><div class="big" id="cash"></div></div>
+<div class="card"><small>عدد الطائرات</small><div class="big" id="planesCount"></div></div>
+<div class="card"><small>إجمالي الرحلات</small><div class="big" id="flightsCount"></div></div>
+<div class="card"><small>الموظفون</small><div class="big" id="staffCount"></div></div>
+<div class="card"><small>سمعة الشركة</small><div class="big" id="reputation"></div></div>
+<div class="card"><small>مستوى الشركة</small><div class="big" id="level"></div></div>
 </div>
+
 <div class="card">
 <h3>🏢 شركتك</h3>
-<div class="big" id="airlineName">My Airline</div>
+<div class="big" id="airlineName"></div>
 <p class="muted" id="airlineInfo"></p>
 </div>
+
 <div class="card">
 <h3>📊 ملخص العمليات</h3>
 <p>الرحلات المجدولة: <b id="scheduled">0</b></p>
 <p>الرحلات في الجو: <b id="airborne">0</b></p>
 <p>الرحلات المكتملة: <b id="completed">0</b></p>
-<p>إجمالي الأرباح: <b id="totalProfit">AED 0</b></p>
+<p>إجمالي الأرباح: <b id="totalProfit">0</b></p>
 </div>
+
 <div class="card">
 <h3>⏩ إدارة الوقت</h3>
 <p>اليوم داخل اللعبة: <b id="gameDay">1</b></p>
-<p>كل ضغطة تقدم يوم واحد وتنفذ العمليات المستحقة.</p>
 <button onclick="advanceDay()">ابدأ اليوم التالي</button>
 </div>
+
 <div class="card">
 <h3>🎯 مهام الشركة</h3>
 <div id="missions"></div>
+</div>
+</section>
+
+<section id="map" class="page">
+<h2>🌍 الخريطة العالمية</h2>
+<div class="card">
+<p class="muted">اضغط على أي مطار لمعرفة اسمه ومعلوماته. خطوط الخريطة تعرض مسارات رحلات شركتك.</p>
+<div id="worldMap"></div>
+</div>
+<div class="card">
+<h3>حالة الرحلات على الخريطة</h3>
+<div id="mapFlights"></div>
 </div>
 </section>
 
@@ -103,10 +122,7 @@ footer{text-align:center;color:var(--muted);padding:25px}
 
 <section id="market" class="page">
 <h2>🛒 سوق الطائرات</h2>
-<div class="card">
-<p class="muted">اشترِ طائرات جديدة لتوسيع شركتك.</p>
 <div id="marketList"></div>
-</div>
 </section>
 
 <section id="routes" class="page">
@@ -127,33 +143,24 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <input id="cargo" type="number" value="0" min="0">
 <button onclick="createFlight()">جدولة الرحلة</button>
 </div>
+
 <div class="card">
 <h3>سجل الرحلات</h3>
-<div class="tablewrap"><table>
+<div class="tablewrap">
+<table>
 <thead><tr><th>الرحلة</th><th>الطائرة</th><th>المسار</th><th>الحالة</th><th>الربح</th></tr></thead>
 <tbody id="flightList"></tbody>
-</table></div>
+</table>
+</div>
 </div>
 </section>
 
 <section id="staff" class="page">
 <h2>👨‍✈️ إدارة الموظفين</h2>
 <div class="grid">
-<div class="card">
-<h3>طيار</h3><div class="big">AED 25,000</div>
-<p class="muted">تكلفة التوظيف لمرة واحدة.</p>
-<button onclick="hire('pilot')">توظيف طيار</button>
-</div>
-<div class="card">
-<h3>طاقم ضيافة</h3><div class="big">AED 12,000</div>
-<p class="muted">تكلفة التوظيف لمرة واحدة.</p>
-<button onclick="hire('cabin')">توظيف مضيف</button>
-</div>
-<div class="card">
-<h3>مهندس صيانة</h3><div class="big">AED 20,000</div>
-<p class="muted">تكلفة التوظيف لمرة واحدة.</p>
-<button onclick="hire('engineer')">توظيف مهندس</button>
-</div>
+<div class="card"><h3>طيار</h3><div class="big">AED 25,000</div><button onclick="hire('pilot')">توظيف طيار</button></div>
+<div class="card"><h3>طاقم ضيافة</h3><div class="big">AED 12,000</div><button onclick="hire('cabin')">توظيف مضيف</button></div>
+<div class="card"><h3>مهندس صيانة</h3><div class="big">AED 20,000</div><button onclick="hire('engineer')">توظيف مهندس</button></div>
 </div>
 <div class="card">
 <h3>قائمة الموظفين</h3>
@@ -164,7 +171,6 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <section id="airports" class="page">
 <h2>🛫 شبكة المطارات</h2>
 <div class="card">
-<p class="muted">اختر مطاراً لمشاهدة بياناته.</p>
 <div id="airportList"></div>
 <div id="airportDetails"></div>
 </div>
@@ -173,9 +179,9 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <section id="finance" class="page">
 <h2>💰 الإدارة المالية</h2>
 <div class="grid">
-<div class="card"><small>الإيرادات</small><div class="big" id="income">0</div></div>
-<div class="card"><small>المصروفات</small><div class="big" id="expenses">0</div></div>
-<div class="card"><small>صافي الربح</small><div class="big" id="net">0</div></div>
+<div class="card"><small>الإيرادات</small><div class="big" id="income"></div></div>
+<div class="card"><small>المصروفات</small><div class="big" id="expenses"></div></div>
+<div class="card"><small>صافي الربح</small><div class="big" id="net"></div></div>
 </div>
 <div class="card">
 <h3>سجل المعاملات</h3>
@@ -194,6 +200,7 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <select id="hqInput"></select>
 <button onclick="saveSettings()">حفظ التعديلات</button>
 </div>
+
 <div class="card">
 <h3>💾 حفظ البيانات</h3>
 <p class="muted">بيانات اللعبة محفوظة على هذا المتصفح فقط.</p>
@@ -201,6 +208,7 @@ footer{text-align:center;color:var(--muted);padding:25px}
 <button class="secondary" onclick="document.getElementById('importFile').click()">استيراد الحفظ</button>
 <input id="importFile" type="file" accept=".json" hidden onchange="importSave(event)">
 </div>
+
 <div class="card">
 <h3>إعادة اللعبة</h3>
 <button class="danger" onclick="resetGame()">بدء لعبة جديدة</button>
@@ -208,7 +216,8 @@ footer{text-align:center;color:var(--muted);padding:25px}
 </section>
 
 </main>
-<footer>FLIGHT SIM 3.0 · Simulation Game · Not real airline data</footer>
+
+<footer>FLIGHT SIM 3.1 · Simulation Game</footer>
 <div id="toast"></div>
 
 <script>
@@ -236,18 +245,18 @@ const AIRPORTS=[
 ];
 
 const AIRCRAFT=[
-{id:"A380",name:"Airbus A380-800",maker:"Airbus",seats:500,range:15200,speed:900,fuel:12000,price:450000000,maintenance:95},
-{id:"B77W",name:"Boeing 777-300ER",maker:"Boeing",seats:365,range:13650,speed:905,fuel:8500,price:320000000,maintenance:95},
-{id:"A359",name:"Airbus A350-900",maker:"Airbus",seats:315,range:15000,speed:905,fuel:7000,price:310000000,maintenance:97},
-{id:"B789",name:"Boeing 787-9",maker:"Boeing",seats:290,range:14100,speed:900,fuel:6500,price:270000000,maintenance:96},
-{id:"A333",name:"Airbus A330-300",maker:"Airbus",seats:277,range:11750,speed:880,fuel:7200,price:180000000,maintenance:90},
-{id:"B738",name:"Boeing 737-800",maker:"Boeing",seats:189,range:5400,speed:840,fuel:3000,price:95000000,maintenance:90},
-{id:"A320",name:"Airbus A320neo",maker:"Airbus",seats:186,range:6300,speed:840,fuel:2800,price:115000000,maintenance:97},
-{id:"B38M",name:"Boeing 737 MAX 8",maker:"Boeing",seats:178,range:6570,speed:840,fuel:2700,price:110000000,maintenance:97},
-{id:"A21N",name:"Airbus A321neo",maker:"Airbus",seats:220,range:7400,speed:840,fuel:3200,price:130000000,maintenance:97},
-{id:"E190",name:"Embraer E190",maker:"Embraer",seats:100,range:4500,speed:830,fuel:1800,price:55000000,maintenance:92},
-{id:"B748",name:"Boeing 747-8",maker:"Boeing",seats:410,range:14320,speed:910,fuel:11500,price:380000000,maintenance:92},
-{id:"A339",name:"Airbus A330-900neo",maker:"Airbus",seats:287,range:13300,speed:880,fuel:6800,price:250000000,maintenance:97}
+{id:"A380",name:"Airbus A380-800",maker:"Airbus",seats:500,range:15200,speed:900,price:450000000},
+{id:"B77W",name:"Boeing 777-300ER",maker:"Boeing",seats:365,range:13650,speed:905,price:320000000},
+{id:"A359",name:"Airbus A350-900",maker:"Airbus",seats:315,range:15000,speed:905,price:310000000},
+{id:"B789",name:"Boeing 787-9",maker:"Boeing",seats:290,range:14100,speed:900,price:270000000},
+{id:"A333",name:"Airbus A330-300",maker:"Airbus",seats:277,range:11750,speed:880,price:180000000},
+{id:"B738",name:"Boeing 737-800",maker:"Boeing",seats:189,range:5400,speed:840,price:95000000},
+{id:"A320",name:"Airbus A320neo",maker:"Airbus",seats:186,range:6300,speed:840,price:115000000},
+{id:"B38M",name:"Boeing 737 MAX 8",maker:"Boeing",seats:178,range:6570,speed:840,price:110000000},
+{id:"A21N",name:"Airbus A321neo",maker:"Airbus",seats:220,range:7400,speed:840,price:130000000},
+{id:"E190",name:"Embraer E190",maker:"Embraer",seats:100,range:4500,speed:830,price:55000000},
+{id:"B748",name:"Boeing 747-8",maker:"Boeing",seats:410,range:14320,speed:910,price:380000000},
+{id:"A339",name:"Airbus A330-900neo",maker:"Airbus",seats:287,range:13300,speed:880,price:250000000}
 ];
 
 const KEY="flightsim3_save";
@@ -262,18 +271,24 @@ planes:[],staff:[],flights:[],transactions:[],
 income:0,expenses:0
 };
 }
+
 let game;
-try{game=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){game=fresh()}
+try{
+game=JSON.parse(localStorage.getItem(KEY))||fresh();
+if(!Array.isArray(game.planes)||!Array.isArray(game.flights))game=fresh();
+}catch(e){game=fresh()}
+
 function save(){localStorage.setItem(KEY,JSON.stringify(game))}
 function toast(msg){
-let t=document.getElementById("toast");t.textContent=msg;t.style.display="block";
+let t=document.getElementById("toast");
+t.textContent=msg;t.style.display="block";
 setTimeout(()=>t.style.display="none",2500);
 }
 function log(title,amount,type){
-game.transactions.unshift({title,amount,type,day:game.day});
-game.transactions=game.transactions.slice(0,80);
 if(type==="income"){game.income+=amount;game.cash+=amount}
 else{game.expenses+=amount;game.cash-=amount}
+game.transactions.unshift({title,amount,type,day:game.day});
+game.transactions=game.transactions.slice(0,80);
 }
 function airport(code){return AIRPORTS.find(a=>a.code===code)}
 function planeModel(id){return AIRCRAFT.find(p=>p.id===id)}
@@ -284,15 +299,74 @@ let dLat=rad(p2.lat-p1.lat),dLon=rad(p2.lon-p1.lon);
 let x=Math.sin(dLat/2)**2+Math.cos(rad(p1.lat))*Math.cos(rad(p2.lat))*Math.sin(dLon/2)**2;
 return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
-function moneyText(n){return money(n)}
 function addXP(n){
 game.xp+=n;
 while(game.xp>=game.level*500){
-game.xp-=game.level*500;game.level++;
+game.xp-=game.level*500;
+game.level++;
 game.reputation=Math.min(100,game.reputation+2);
 toast("🎉 وصلت المستوى "+game.level);
 }
 }
+
+let worldMap=null;
+let mapLayers=[];
+
+function initMap(){
+if(worldMap)return;
+if(!window.L){
+document.getElementById("worldMap").innerHTML="تعذر تحميل الخريطة. تأكد من اتصال الإنترنت.";
+return;
+}
+worldMap=L.map("worldMap").setView([25,45],3);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+attribution:"© OpenStreetMap",
+maxZoom:18
+}).addTo(worldMap);
+renderWorldMap();
+}
+
+function renderWorldMap(){
+if(!worldMap)return;
+
+mapLayers.forEach(layer=>worldMap.removeLayer(layer));
+mapLayers=[];
+
+AIRPORTS.forEach(a=>{
+let marker=L.circleMarker([a.lat,a.lon],{
+radius:6,color:"#e1b84f",fillColor:"#e1b84f",fillOpacity:1
+}).bindPopup(
+"<b>"+a.code+"</b><br>"+a.name+"<br>"+a.city+", "+a.country
+).addTo(worldMap);
+mapLayers.push(marker);
+});
+
+game.flights.forEach(f=>{
+let a=airport(f.from),b=airport(f.to);
+if(!a||!b)return;
+
+let color=f.status==="وصلت"?"#35c78a":"#e1b84f";
+
+let line=L.polyline([[a.lat,a.lon],[b.lat,b.lon]],{
+color:color,weight:3,opacity:.85
+}).bindPopup(
+"<b>"+f.number+"</b><br>"+
+f.from+" → "+f.to+"<br>"+
+"الحالة: "+f.status
+).addTo(worldMap);
+
+mapLayers.push(line);
+});
+
+document.getElementById("mapFlights").innerHTML=
+game.flights.length?
+game.flights.slice().reverse().map(f=>
+"<p>"+f.number+" · "+f.from+" → "+f.to+" · "+f.status+"</p>"
+).join(""):"لا توجد رحلات لعرضها على الخريطة.";
+
+setTimeout(()=>worldMap.invalidateSize(),200);
+}
+
 function render(){
 document.getElementById("cash").textContent=money(game.cash);
 document.getElementById("planesCount").textContent=game.planes.length;
@@ -301,7 +375,7 @@ document.getElementById("staffCount").textContent=game.staff.length;
 document.getElementById("reputation").textContent=game.reputation+"%";
 document.getElementById("level").textContent=game.level;
 document.getElementById("airlineName").textContent=game.name;
-document.getElementById("airlineInfo").textContent=game.code+" · Headquarters: "+game.hq+" · Level "+game.level;
+document.getElementById("airlineInfo").textContent=game.code+" · Headquarters: "+game.hq;
 document.getElementById("scheduled").textContent=game.flights.filter(f=>f.status==="مجدولة").length;
 document.getElementById("airborne").textContent=game.flights.filter(f=>f.status==="في الجو").length;
 document.getElementById("completed").textContent=game.flights.filter(f=>f.status==="وصلت").length;
@@ -310,19 +384,34 @@ document.getElementById("income").textContent=money(game.income);
 document.getElementById("expenses").textContent=money(game.expenses);
 document.getElementById("net").textContent=money(game.income-game.expenses);
 document.getElementById("gameDay").textContent=game.day;
-renderFleet();renderMarket();renderFlights();renderStaff();renderAirports();renderTransactions();renderMissions();populateSelects();
+
+renderFleet();
+renderMarket();
+renderFlights();
+renderStaff();
+renderAirports();
+renderTransactions();
+renderMissions();
+populateSelects();
+renderWorldMap();
 }
+
 function renderFleet(){
 let el=document.getElementById("fleetList");
-if(!game.planes.length){el.innerHTML='<div class="card">ما عندك طائرات. افتح سوق الطائرات واشترِ أول طائرة.</div>';return}
+if(!game.planes.length){
+el.innerHTML='<div class="card">ما عندك طائرات. افتح سوق الطائرات واشترِ أول طائرة.</div>';
+return;
+}
 el.innerHTML=game.planes.map(p=>{
 let m=planeModel(p.model);
 return `<div class="card">
 <h3>✈️ ${m.name}</h3>
 <p>رقم التسجيل: <b>${p.reg}</b></p>
 <p>المقاعد: ${m.seats} · المدى: ${m.range.toLocaleString()} كم</p>
-<p>الوقود: ${p.fuel}%</p><div class="progress"><span style="width:${p.fuel}%"></span></div>
-<p>الحالة الفنية: ${p.health}%</p><div class="progress"><span style="width:${p.health}%"></span></div>
+<p>الوقود: ${p.fuel}%</p>
+<div class="progress"><span style="width:${p.fuel}%"></span></div>
+<p>الحالة الفنية: ${p.health}%</p>
+<div class="progress"><span style="width:${p.health}%"></span></div>
 <p>الحالة: <span class="badge">${p.status}</span></p>
 <div class="actions">
 <button onclick="refuel('${p.id}')">تعبئة الوقود</button>
@@ -331,6 +420,7 @@ return `<div class="card">
 </div></div>`;
 }).join("");
 }
+
 function renderMarket(){
 document.getElementById("marketList").innerHTML=AIRCRAFT.map(p=>
 `<div class="card">
@@ -342,13 +432,22 @@ document.getElementById("marketList").innerHTML=AIRCRAFT.map(p=>
 <button onclick="buyPlane('${p.id}')">شراء الطائرة</button>
 </div>`).join("");
 }
+
 function buyPlane(id){
 let m=planeModel(id);
 if(game.cash<m.price)return toast("رصيدك ما يكفي!");
-let p={id:uid(),model:id,reg:game.code+"-"+String(game.planes.length+1).padStart(3,"0"),fuel:100,health:100,status:"جاهزة"};
+let p={
+id:uid(),model:id,
+reg:game.code+"-"+String(game.planes.length+1).padStart(3,"0"),
+fuel:100,health:100,status:"جاهزة"
+};
 log("شراء "+m.name,m.price,"expense");
-game.planes.push(p);addXP(100);save();render();toast("تم شراء الطائرة!");
+game.planes.push(p);
+addXP(100);
+save();render();
+toast("تم شراء الطائرة!");
 }
+
 function sellPlane(id){
 let p=game.planes.find(x=>x.id===id);
 if(!p)return;
@@ -356,56 +455,90 @@ if(p.status!=="جاهزة")return toast("الطائرة مستخدمة في رح
 if(!confirm("تأكيد بيع الطائرة؟"))return;
 let m=planeModel(p.model),value=m.price*.65;
 game.planes=game.planes.filter(x=>x.id!==id);
-log("بيع "+m.name,value,"income");save();render();toast("تم بيع الطائرة");
+log("بيع "+m.name,value,"income");
+save();render();toast("تم بيع الطائرة");
 }
+
 function refuel(id){
 let p=game.planes.find(x=>x.id===id);
 if(!p||p.fuel>=100)return toast("الوقود ممتلئ");
 let cost=(100-p.fuel)*1800;
 if(game.cash<cost)return toast("الرصيد غير كافٍ");
-log("تعبئة وقود "+p.reg,cost,"expense");p.fuel=100;save();render();
+log("تعبئة وقود "+p.reg,cost,"expense");
+p.fuel=100;save();render();
 }
+
 function repair(id){
 let p=game.planes.find(x=>x.id===id);
 if(!p||p.health>=100)return toast("الطائرة بحالة ممتازة");
 let cost=(100-p.health)*12000;
 if(game.cash<cost)return toast("الرصيد غير كافٍ");
-log("صيانة "+p.reg,cost,"expense");p.health=100;save();render();
+log("صيانة "+p.reg,cost,"expense");
+p.health=100;save();render();
 }
+
 function populateSelects(){
 let ps=document.getElementById("planeSelect");
 let current=ps.value;
-ps.innerHTML='<option value="">اختر طائرة</option>'+game.planes.filter(p=>p.status==="جاهزة").map(p=>`<option value="${p.id}">${p.reg} - ${planeModel(p.model).name}</option>`).join("");
+ps.innerHTML='<option value="">اختر طائرة</option>'+
+game.planes.filter(p=>p.status==="جاهزة").map(p=>
+`<option value="${p.id}">${p.reg} - ${planeModel(p.model).name}</option>`
+).join("");
+
 if(game.planes.some(p=>p.id===current&&p.status==="جاهزة"))ps.value=current;
-let from=document.getElementById("fromSelect"),to=document.getElementById("toSelect");
-let options=AIRPORTS.map(a=>`<option value="${a.code}">${a.code} - ${a.city}</option>`).join("");
-from.innerHTML=options;to.innerHTML=options;
-if(!from.value)from.value=game.hq;
-if(!to.value||to.value===from.value)to.value="AUH";
+
+let options=AIRPORTS.map(a=>
+`<option value="${a.code}">${a.code} - ${a.city}</option>`
+).join("");
+
+let from=document.getElementById("fromSelect");
+let to=document.getElementById("toSelect");
+from.innerHTML=options;
+to.innerHTML=options;
+from.value=game.hq;
+to.value="AUH";
+
 let hq=document.getElementById("hqInput");
 if(hq){hq.innerHTML=options;hq.value=game.hq}
 }
+
 function renderFlights(){
-document.getElementById("flightList").innerHTML=game.flights.length?game.flights.slice().reverse().map(f=>
-`<tr><td>${f.number}</td><td>${f.reg}</td><td>${f.from} → ${f.to}</td><td><span class="badge ${f.status==="ملغاة"?"red":""}">${f.status}</span></td><td>${money(f.profit)}</td></tr>`).join(""):'<tr><td colspan="5">لا توجد رحلات حتى الآن</td></tr>';
+document.getElementById("flightList").innerHTML=game.flights.length?
+game.flights.slice().reverse().map(f=>
+`<tr>
+<td>${f.number}</td><td>${f.reg}</td>
+<td>${f.from} → ${f.to}</td>
+<td><span class="badge">${f.status}</span></td>
+<td>${money(f.profit)}</td>
+</tr>`).join("") :
+'<tr><td colspan="5">لا توجد رحلات حتى الآن</td></tr>';
 }
+
 function createFlight(){
 let p=game.planes.find(x=>x.id===document.getElementById("planeSelect").value);
-let from=document.getElementById("fromSelect").value,to=document.getElementById("toSelect").value;
+let from=document.getElementById("fromSelect").value;
+let to=document.getElementById("toSelect").value;
 let price=Number(document.getElementById("ticketPrice").value);
 let load=Number(document.getElementById("loadFactor").value);
 let cargo=Number(document.getElementById("cargo").value);
+
 if(!p)return toast("اشترِ طائرة أولاً");
 if(from===to)return toast("اختر مطارين مختلفين");
 if(!price||price<100||load<10||load>100||cargo<0)return toast("تأكد من البيانات");
-let m=planeModel(p.model),km=distance(from,to);
+
+let m=planeModel(p.model);
+let km=distance(from,to);
+
 if(km>m.range)return toast("المسافة أكبر من مدى الطائرة!");
 if(p.fuel<Math.max(15,km/m.range*100))return toast("الوقود غير كافٍ!");
 if(p.health<35)return toast("الطائرة تحتاج صيانة!");
+
 let pilots=game.staff.filter(s=>s.type==="pilot").length;
 let cabin=game.staff.filter(s=>s.type==="cabin").length;
+
 if(pilots<1||cabin<1)return toast("تحتاج طياراً ومضيفاً على الأقل");
 if(cargo>m.seats*35)return toast("كمية الشحن أكبر من السعة المسموحة");
+
 let passengers=Math.floor(m.seats*load/100);
 let hours=km/m.speed;
 let fuelCost=km*2.8;
@@ -414,51 +547,88 @@ let operating=hours*18000;
 let revenue=passengers*price+cargo*4;
 let totalCost=fuelCost+airportFees+operating;
 let profit=revenue-totalCost;
+
 let f={
 number:game.code+String(game.flights.length+1).padStart(4,"0"),
-planeId:p.id,reg:p.reg,from,to,km:Math.round(km),
-passengers,cargo,price,revenue,cost:totalCost,profit,
+planeId:p.id,reg:p.reg,from,to,
+km:Math.round(km),passengers,cargo,
+price,revenue,cost:totalCost,profit,
 duration:Math.max(1,Math.ceil(hours/12)),
 departDay:game.day,status:"مجدولة"
 };
+
 p.fuel=Math.max(0,p.fuel-km/m.range*100);
 p.health=Math.max(10,p.health-Math.max(1,km/1000*1.5));
 p.status="مشغولة";
-game.flights.push(f);addXP(50);
-save();render();toast("تمت جدولة الرحلة "+f.number);
+
+game.flights.push(f);
+addXP(50);
+save();render();
+toast("تمت جدولة الرحلة "+f.number);
 }
+
 function renderStaff(){
 let pilots=game.staff.filter(s=>s.type==="pilot").length;
 let cabin=game.staff.filter(s=>s.type==="cabin").length;
 let engineers=game.staff.filter(s=>s.type==="engineer").length;
+
 document.getElementById("staffList").innerHTML=
-`<p>👨‍✈️ الطيارون: ${pilots}</p><p>🧑‍✈️ طاقم الضيافة: ${cabin}</p><p>🔧 المهندسون: ${engineers}</p>`+
+`<p>👨‍✈️ الطيارون: ${pilots}</p>
+<p>🧑‍✈️ طاقم الضيافة: ${cabin}</p>
+<p>🔧 المهندسون: ${engineers}</p>`+
 game.staff.map(s=>`<p>${s.name} — ${s.role}</p>`).join("");
 }
+
 function hire(type){
 let data={
 pilot:{cost:25000,role:"طيار",name:"Pilot"},
 cabin:{cost:12000,role:"مضيف",name:"Cabin Crew"},
 engineer:{cost:20000,role:"مهندس صيانة",name:"Engineer"}
 }[type];
+
 if(game.cash<data.cost)return toast("الرصيد غير كافٍ");
 log("توظيف "+data.role,data.cost,"expense");
-game.staff.push({id:uid(),type,role:data.role,name:data.name+" "+(game.staff.length+1)});
-addXP(20);save();render();toast("تم التوظيف");
+game.staff.push({
+id:uid(),type,role:data.role,
+name:data.name+" "+(game.staff.length+1)
+});
+addXP(20);
+save();render();toast("تم التوظيف");
 }
+
 function renderAirports(){
 document.getElementById("airportList").innerHTML=AIRPORTS.map(a=>
-`<button class="airport" onclick="showAirport('${a.code}')">${a.code}</button>`).join("");
+`<button class="airport" onclick="showAirport('${a.code}')">${a.code}</button>`
+).join("");
 }
+
 function showAirport(code){
 let a=airport(code);
 document.getElementById("airportDetails").innerHTML=
-`<div class="card"><h3>${a.name}</h3><p>${a.city}, ${a.country}</p><p>رمز المطار: ${a.code}</p><p>الإحداثيات: ${a.lat}, ${a.lon}</p></div>`;
+`<div class="card">
+<h3>${a.name}</h3>
+<p>${a.city}, ${a.country}</p>
+<p>رمز المطار: ${a.code}</p>
+<p>الإحداثيات: ${a.lat}, ${a.lon}</p>
+<button onclick="openMapAt('${a.code}')">عرض على الخريطة</button>
+</div>`;
 }
+
+function openMapAt(code){
+document.querySelector('[data-page="map"]').click();
+let a=airport(code);
+if(a&&worldMap)worldMap.setView([a.lat,a.lon],7);
+}
+
 function renderTransactions(){
 document.getElementById("transactions").innerHTML=game.transactions.length?
-game.transactions.map(t=>`<p>${t.title} · اليوم ${t.day} · <b style="color:${t.type==="income"?"#62d69a":"#ff8888"}">${t.type==="income"?"+":"-"}${money(t.amount)}</b></p>`).join(""):"لا توجد معاملات";
+game.transactions.map(t=>
+`<p>${t.title} · اليوم ${t.day} ·
+<b style="color:${t.type==="income"?"#62d69a":"#ff8888"}">
+${t.type==="income"?"+":"-"}${money(t.amount)}
+</b></p>`).join(""):"لا توجد معاملات";
 }
+
 function renderMissions(){
 let missions=[
 {title:"امتلك أول طائرة",done:game.planes.length>=1},
@@ -469,62 +639,100 @@ let missions=[
 document.getElementById("missions").innerHTML=missions.map(m=>
 `<p>${m.done?"✅":"⬜"} ${m.title}</p>`).join("");
 }
+
 function advanceDay(){
 game.day++;
-game.planes.forEach(p=>{if(p.status==="جاهزة"&&p.health<100)p.health=Math.min(100,p.health+.2)});
+
 game.flights.forEach(f=>{
-if(f.status==="مجدولة"&&game.day>=f.departDay+1)f.status="في الجو";
+if(f.status==="مجدولة"&&game.day>=f.departDay+1){
+f.status="في الجو";
+}
 else if(f.status==="في الجو"&&game.day>=f.departDay+f.duration+1){
 f.status="وصلت";
 let p=game.planes.find(x=>x.id===f.planeId);
 if(p)p.status="جاهزة";
+
 log("إيرادات الرحلة "+f.number,f.revenue,"income");
 log("تكاليف الرحلة "+f.number,f.cost,"expense");
 game.reputation=Math.min(100,game.reputation+.5);
 addXP(100);
 }
 });
+
 let salaries=game.staff.length*900;
-if(salaries>0&&game.cash>=salaries)log("رواتب الموظفين",salaries,"expense");
-else if(salaries>0){game.reputation=Math.max(0,game.reputation-2);toast("تنبيه: لا يوجد رصيد كافٍ للرواتب");}
-save();render();toast("بدأ اليوم "+game.day);
+if(salaries>0&&game.cash>=salaries){
+log("رواتب الموظفين",salaries,"expense");
+}else if(salaries>0){
+game.reputation=Math.max(0,game.reputation-2);
+toast("تنبيه: لا يوجد رصيد كافٍ للرواتب");
 }
+
+save();render();
+toast("بدأ اليوم "+game.day);
+}
+
 function saveSettings(){
 let name=document.getElementById("nameInput").value.trim();
 let code=document.getElementById("codeInput").value.trim().toUpperCase();
 let hq=document.getElementById("hqInput").value;
-if(name.length<2||!/^[A-Z0-9]{3}$/.test(code))return toast("اسم الشركة أو الرمز غير صحيح");
-game.name=name;game.code=code;game.hq=hq;save();render();toast("تم حفظ الإعدادات");
+
+if(name.length<2||!/^[A-Z0-9]{3}$/.test(code)){
+return toast("اسم الشركة أو الرمز غير صحيح");
 }
+game.name=name;game.code=code;game.hq=hq;
+save();render();toast("تم حفظ الإعدادات");
+}
+
 function exportSave(){
 let blob=new Blob([JSON.stringify(game,null,2)],{type:"application/json"});
-let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="flight-sim-save.json";a.click();URL.revokeObjectURL(a.href);
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="flight-sim-save.json";
+a.click();
+URL.revokeObjectURL(a.href);
 }
+
 function importSave(event){
-let file=event.target.files[0];if(!file)return;
+let file=event.target.files[0];
+if(!file)return;
+
 let reader=new FileReader();
 reader.onload=()=>{
 try{
 let data=JSON.parse(reader.result);
 if(typeof data.cash!=="number"||!Array.isArray(data.planes)||!Array.isArray(data.flights))throw Error();
-game=data;save();render();toast("تم استيراد الحفظ");
+game=data;
+save();render();toast("تم استيراد الحفظ");
 }catch(e){toast("ملف الحفظ غير صالح");}
 };
 reader.readAsText(file);
 }
+
 function resetGame(){
 if(!confirm("متأكد؟ سيتم حذف تقدمك الحالي من هذا المتصفح."))return;
 game=fresh();save();render();toast("بدأت لعبة جديدة");
 }
+
 document.getElementById("nav").addEventListener("click",e=>{
 if(e.target.tagName!=="BUTTON")return;
+
 document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
 e.target.classList.add("active");
+
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.getElementById(e.target.dataset.page).classList.add("active");
+
+if(e.target.dataset.page==="map"){
+setTimeout(()=>{
+initMap();
+if(worldMap)worldMap.invalidateSize();
+},100);
+}
 });
+
 document.getElementById("nameInput").value=game.name;
 document.getElementById("codeInput").value=game.code;
+
 populateSelects();
 render();
 </script>
